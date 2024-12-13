@@ -9,7 +9,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{github.repository}}/helmku
-  DOCKERFILE: Dockerfile.helmku
   ALPINE_VERSION: 3.20.2
   KUBE_VERSION: 1.29.6
   HELM_VERSION: 3.15.3
@@ -39,7 +38,7 @@ jobs:
           /kaniko/executor \
             --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --context-sub-path "docker" \
-            --dockerfile "${{env.DOCKERFILE}}" \
+            --dockerfile "Dockerfile.helmku" \
             --destination "${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}" \
             --digest-file digest.txt
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
