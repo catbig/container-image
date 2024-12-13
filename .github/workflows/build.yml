@@ -15,6 +15,7 @@ env:
   # used by kaniko for git clone `context`
   GIT_USERNAME: ${{ github.actor }}
   GIT_PASSWORD: ${{ github.token }}
+  RUNNERS_VERSION: 0.0.1
 
   # trigger workflow
   RUNNING_NUMBER: 20241213-1454
