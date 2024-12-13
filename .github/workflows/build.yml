@@ -43,6 +43,7 @@ jobs:
             --context-sub-path "${{env.CONTEXT_SUB_PATH}}" \
             --dockerfile "${{env.DOCKERFILE}}" \
             --destination "${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}" \
+            --destination "${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest" \
             --digest-file digest.txt \
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
