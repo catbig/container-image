@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{github.repository}}/helmku
-  DOCKERFILE: docker/Dockerfile.helm-kubectl
+  DOCKERFILE: Dockerfile.helmku
   ALPINE_VERSION: 3.20.2
   KUBE_VERSION: 1.29.6
   HELM_VERSION: 3.15.3
@@ -22,7 +22,7 @@ env:
   # trigger workflow
   RUNNING_NUMBER: 20241213-1454
 jobs:
-  runner-image:
+  helmku:
     runs-on: ubuntu-latest
     container: gcr.io/kaniko-project/executor:v1.23.2-debug
     permissions:
