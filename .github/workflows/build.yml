@@ -35,6 +35,8 @@ jobs:
         id: push
         run: |
           echo image: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}
+          echo https://get.helm.sh/helm-v${{env.HELM_VERSION}}-linux-amd64.tar.gz
+          pwd && ls -al
           echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n ${{github.actor}}:${{github.token}} | base64)\"}}}" > /kaniko/.docker/config.json
           /kaniko/executor \
             --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
@@ -46,7 +48,7 @@ jobs:
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
             --build-arg HELM_VERSION=${{env.HELM_VERSION}}
           echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
-          echo digest: `cat digest.txt`
+          echo digest: `cat digest.txt` && ls -al
       # - name: Generate artifact attestation
       #   uses: actions/attest-build-provenance@v2
       #   with:
