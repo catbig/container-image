@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - .github/workflows/build.yml
-      - docker/Dockerfile.runner
+      - docker/Dockerfile.helmku
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{github.repository}}/helmku
