@@ -1,0 +1,42 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/build.yml
+      - docker/Dockerfile.runner
+env:
+  REGISTRY: ghcr.io
+  ALPINE_VERSION: 3.20.2
+  KUBE_VERSION: 1.29.6
+  HELM_VERSION: 3.15.3
+
+  # used by kaniko for git clone `context`
+  GIT_USERNAME: ${{ github.actor }}
+  GIT_PASSWORD: ${{ github.token }}
+
+  # trigger workflow
+  RUNNING_NUMBER: 20241213-1454
+jobs:
+  runner-image:
+    runs-on: ubuntu-latest
+    container: gcr.io/kaniko-project/executor:v1.23.2-debug
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    timeout-minutes: 60
+    steps:
+      - name: Build and push Docker image
+        run: |
+          echo image: $REGISTRY/$GITHUB_REPOSITORY/runner:$RUNNERS_VERSION
+          echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n $GIT_USERNAME:$GIT_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
+          /kaniko/executor \
+            --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
+            --context-sub-path "docker" \
+            --dockerfile "docker/Dockerfile.runner" \
+            --destination "$REGISTRY/$GITHUB_REPOSITORY/runner:$RUNNERS_VERSION" \
+            --build-arg ALPINE_VERSION=$ALPINE_VERSION \
+            --build-arg KUBE_VERSION=$KUBE_VERSION \
+            --build-arg HELM_VERSION=$HELM_VERSION
