@@ -36,7 +36,7 @@ jobs:
           /kaniko/executor \
             --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --context-sub-path "docker" \
-            --dockerfile "docker/Dockerfile.runner" \
+            --dockerfile "Dockerfile.runner" \
             --destination "${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}" \
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
