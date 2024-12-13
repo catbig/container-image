@@ -14,7 +14,7 @@ RUN apk update && apk add --no-cache \
     curl ca-certificates tar xz
 
 WORKDIR /compressed/
-RUN curl -Lso helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz
+RUN curl -Lso helm.tar.gz "https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz"
 RUN tar -xf helm.tar.gz
 
 WORKDIR /prepare/
