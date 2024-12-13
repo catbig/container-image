@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branches:
+    branches-ignore:
       - main
     paths:
       - .github/workflows/build.yml
@@ -30,13 +30,13 @@ jobs:
     steps:
       - name: Build and push Docker image
         run: |
-          echo image: $REGISTRY/$GITHUB_REPOSITORY/runner:$RUNNERS_VERSION
-          echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n $GIT_USERNAME:$GIT_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
+          echo image: ${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}
+          echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n ${{github.actor}}:${{github.token}} | base64)\"}}}" > /kaniko/.docker/config.json
           /kaniko/executor \
             --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --context-sub-path "docker" \
             --dockerfile "docker/Dockerfile.runner" \
-            --destination "$REGISTRY/$GITHUB_REPOSITORY/runner:$RUNNERS_VERSION" \
-            --build-arg ALPINE_VERSION=$ALPINE_VERSION \
-            --build-arg KUBE_VERSION=$KUBE_VERSION \
-            --build-arg HELM_VERSION=$HELM_VERSION
+            --destination "${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}" \
+            --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
+            --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
+            --build-arg HELM_VERSION=${{env.HELM_VERSION}}
