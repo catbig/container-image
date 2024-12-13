@@ -26,4 +26,4 @@ COPY --from=dependency /prepare/* /usr/local/bin/
 RUN apk update && apk add --no-cache ca-certificates unzip envsubst 7zip \
     && chmod +x /usr/local/bin/*
 # uncomment for debug purpose
-RUN exit 1
+# RUN exit 1
