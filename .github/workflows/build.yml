@@ -8,6 +8,8 @@ on:
       - docker/Dockerfile.runner
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{github.repository}}/helmku
+  DOCKERFILE: docker/Dockerfile.helm-kubectl
   ALPINE_VERSION: 3.20.2
   KUBE_VERSION: 1.29.6
   HELM_VERSION: 3.15.3
@@ -30,14 +32,24 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Build and push Docker image
+        id: push
         run: |
-          echo image: ${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}
+          echo image: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}
           echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n ${{github.actor}}:${{github.token}} | base64)\"}}}" > /kaniko/.docker/config.json
           /kaniko/executor \
             --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --context-sub-path "docker" \
-            --dockerfile "Dockerfile.runner" \
+            --dockerfile "${{env.DOCKERFILE}}" \
             --destination "${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}" \
+            --digest-file digest.txt
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
             --build-arg HELM_VERSION=${{env.HELM_VERSION}}
+          echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
+          echo digest: `cat digest.txt`
+      # - name: Generate artifact attestation
+      #   uses: actions/attest-build-provenance@v2
+      #   with:
+      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+      #     subject-digest: ${{ steps.push.outputs.digest }}
+      #     push-to-registry: true
