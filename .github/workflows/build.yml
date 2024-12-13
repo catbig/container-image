@@ -9,7 +9,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{github.repository}}/helmku
-  CONTEXT: docker
+  CONTEXT: ${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}
+  CONTEXT_SUB_PATH: docker
   DOCKERFILE: Dockerfile.helmku
   ALPINE_VERSION: 3.20.2
   KUBE_VERSION: 1.29.6
@@ -38,18 +39,18 @@ jobs:
           echo image: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}
           echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(echo -n ${{github.actor}}:${{github.token}} | base64)\"}}}" > /kaniko/.docker/config.json
           /kaniko/executor \
-            --context "${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
-            --context-sub-path "${{env.CONTEXT}}" \
+            --context "${{ env.CONTEXT }}" \
+            --context-sub-path "${{env.CONTEXT_SUB_PATH}}" \
             --dockerfile "${{env.DOCKERFILE}}" \
-            --destination "${{env.REGISTRY}}/${{github.repository}}/runner:${{env.RUNNERS_VERSION}}" \
+            --destination "${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}" \
             --digest-file digest.txt \
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
             --build-arg HELM_VERSION=${{env.HELM_VERSION}}
           echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
           echo digest: `cat digest.txt`
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v2
+      # - name: Attest Build Provenance
+      #   uses: actions/attest-build-provenance@2.1.0
       #   with:
       #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
       #     subject-digest: ${{ steps.push.outputs.digest }}
