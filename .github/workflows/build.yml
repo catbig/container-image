@@ -31,6 +31,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      attestations: write
     timeout-minutes: 60
     steps:
       - name: Build and push Docker image
