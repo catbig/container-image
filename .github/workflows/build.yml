@@ -50,7 +50,7 @@ jobs:
           echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
           echo digest: `cat digest.txt`
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@2
+        uses: actions/attest-build-provenance@v2.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
