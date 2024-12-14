@@ -43,16 +43,15 @@ jobs:
             --context-sub-path "${{env.CONTEXT_SUB_PATH}}" \
             --dockerfile "${{env.DOCKERFILE}}" \
             --destination "${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.RUNNERS_VERSION}}" \
-            --destination "${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest" \
             --digest-file digest.txt \
             --build-arg ALPINE_VERSION=${{env.ALPINE_VERSION}} \
             --build-arg KUBE_VERSION=${{env.KUBE_VERSION}} \
             --build-arg HELM_VERSION=${{env.HELM_VERSION}}
           echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
           echo digest: `cat digest.txt`
-      # - name: Attest Build Provenance
-      #   uses: actions/attest-build-provenance@2.1.0
-      #   with:
-      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-      #     subject-digest: ${{ steps.push.outputs.digest }}
-      #     push-to-registry: true
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@2.1.0
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
