@@ -14,7 +14,7 @@ RUN apk update && apk add --no-cache \
     curl ca-certificates tar xz
 
 WORKDIR /compressed/
-RUN curl -Lso helm.tar.gz https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz
+RUN curl -Lso helm.tar.gz "https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz"
 RUN tar -xf helm.tar.gz
 
 WORKDIR /prepare/
@@ -23,7 +23,8 @@ RUN mv /compressed/${TARGETOS}-${TARGETARCH}/helm ./
 
 FROM alpine:${ALPINE_VERSION}
 COPY --from=dependency /prepare/* /usr/local/bin/
-RUN apk update && apk add --no-cache ca-certificates unzip envsubst 7zip \
+RUN apk update && apk add --no-cache git \
+    ca-certificates unzip envsubst 7zip \
     && chmod +x /usr/local/bin/*
 # uncomment for debug purpose
 # RUN exit 1
