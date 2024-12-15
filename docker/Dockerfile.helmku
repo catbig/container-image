@@ -23,8 +23,8 @@ RUN mv /compressed/${TARGETOS}-${TARGETARCH}/helm ./
 
 FROM alpine:${ALPINE_VERSION}
 COPY --from=dependency /prepare/* /usr/local/bin/
-RUN apk update && apk add --no-cache git \
-    ca-certificates unzip envsubst 7zip \
+RUN apk update && apk add --no-cache ca-certificates \
+    git jq unzip envsubst 7zip \
     && chmod +x /usr/local/bin/*
 # uncomment for debug purpose
 # RUN exit 1
