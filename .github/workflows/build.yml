@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branches-ignore:
+    branches:
       - main
     paths:
       - .github/workflows/build.yml
@@ -52,7 +52,6 @@ jobs:
             --build-arg HELM_VERSION=${{env.HELM_VERSION}}
           echo digest=`cat digest.txt` >> $GITHUB_OUTPUT
       - name: Attest Build Provenance
-        if: false
         uses: actions/attest-build-provenance@v2.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
